@@ -1,0 +1,62 @@
+<div class="page-wrapper dashboard">
+  <div class="dash-header">
+    <div>
+      <h2>Bienvenido a BeautyCare WEB</h2>
+      <p class="subtitle">
+        Gestiona clientes, citas, servicios y personal desde el panel.
+      </p>
+    </div>
+  </div>
+
+  
+  <div class="cards">
+    <div class="card">
+      <span class="label">Clientes</span>
+      <span class="value">{{ resumen.clientes || '—' }}</span>
+      <span class="hint">Registros activos en el sistema.</span>
+    </div>
+
+    <div class="card">
+      <span class="label">Servicios</span>
+      <span class="value">{{ resumen.servicios || '—' }}</span>
+      <span class="hint">Tratamientos disponibles.</span>
+    </div>
+
+    <div class="card">
+      <span class="label">Personal</span>
+      <span class="value">{{ resumen.personal || '—' }}</span>
+      <span class="hint">Profesionales registrados.</span>
+    </div>
+
+    <div class="card">
+      <span class="label">Citas hoy</span>
+      <span class="value">{{ resumen.citasHoy || '—' }}</span>
+      <span class="hint">Agenda del día.</span>
+    </div>
+  </div>
+
+  <!-- Próximas citas -->
+  <div class="panel">
+    <div class="panel-header">
+      <h3>Próximas citas</h3>
+      <a routerLink="/citas" class="panel-link">Ver todas</a>
+    </div>
+
+    <div class="panel-body" *ngIf="proximasCitas.length > 0; else sinCitas">
+      <div class="cita" *ngFor="let c of proximasCitas">
+        <div class="cita-main">
+          <span class="cita-cliente">{{ c.cliente }}</span>
+          <span class="cita-servicio">{{ c.servicio }}</span>
+        </div>
+        <div class="cita-meta">
+          <span class="pill">{{ c.hora }}</span>
+          <span class="mini">Con {{ c.profesional }}</span>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #sinCitas>
+      <div class="empty">No hay citas próximas registradas aún.</div>
+    </ng-template>
+  </div>
+</div>

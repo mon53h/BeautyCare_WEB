@@ -1,0 +1,18 @@
+.layout-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f7f2f3; /* fondo general suave */
+}
+
+.layout-body {
+  flex: 1;
+  display: flex;
+}
+
+/* Zona donde van tus módulos (Clientes, Citas, etc.) */
+.layout-content {
+  flex: 1;
+  padding: 24px 32px 40px; /* OJO: padding bottom para que no pegue al footer */
+  box-sizing: border-box;
+}

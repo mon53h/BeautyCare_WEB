@@ -1,0 +1,25 @@
+<header class="nav">
+  <div class="brand">
+    <img
+      src="assets/logo-180.png"
+      srcset="assets/logo-180.png 180w, assets/logo-360.png 360w"
+      sizes="36px"
+      alt="BeautyCare"
+      width="180"
+      height="54"
+      class="logo-img"
+    />
+
+    <div class="brand-text">
+      <span class="brand-title">BeautyCare <span class="brand-accent">WEB</span></span>
+      <span class="brand-sub">Panel Administrativo</span>
+    </div>
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="user">
+    <span class="name">Hola, {{ userName }}</span>
+    <button class="btn-out" (click)="logout()">Salir</button>
+  </div>
+</header>

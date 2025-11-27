@@ -1,0 +1,76 @@
+<div class="header">
+  <h2>Servicios</h2>
+  <div class="spacer"></div>
+  <div class="tools">
+    <input class="search" [formControl]="search" placeholder="Buscar servicio…" />
+   <button type="button" class="action" (click)="nuevo()">
+  <span class="plus">＋</span> Agregar Nuevo
+</button>
+
+  </div>
+</div>
+
+<div class="alert error" *ngIf="error">{{ error }}</div>
+
+<div *ngIf="!loading; else cargando">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Duración (min)</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of listaFiltrada">
+        <td>{{ s.nombre }}</td>
+        <td>{{ s.precio | number:'1.2-2' }}</td>
+        <td>{{ s.duracionMin }}</td>
+        <td>
+          <button class="btn sm" (click)="editar(s)">Editar</button>
+          <button class="btn sm danger" (click)="eliminar(s)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="listaFiltrada.length===0" class="empty">No hay servicios registrados.</div>
+</div>
+
+<ng-template #cargando><div class="loading">Cargando servicios…</div></ng-template>
+
+<!-- Panel -->
+<div class="panel" *ngIf="panelAbierto">
+  <div class="panel-card">
+    <div class="panel-header">
+      <h3>{{ editId ? 'Editar servicio' : 'Nuevo servicio' }}</h3>
+      <button class="btn ghost" (click)="cancelar()">Cerrar ✕</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="form">
+      <div class="grid">
+        <label>
+          <span>Nombre *</span>
+          <input class="input" formControlName="nombre" />
+        </label>
+
+        <label>
+          <span>Precio *</span>
+          <input class="input" type="number" formControlName="precio" />
+        </label>
+
+        <label>
+          <span>Duración (min) *</span>
+          <input class="input" type="number" formControlName="duracionMin" />
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="button" (click)="cancelar()">Cancelar</button>
+        <button class="btn primary" type="submit" [disabled]="form.invalid || saving">
+          {{ saving ? 'Guardando…' : (editId ? 'Actualizar' : 'Crear') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

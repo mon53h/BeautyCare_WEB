@@ -1,0 +1,228 @@
+<div class="page-wrapper">
+  <!-- Encabezado con buscador y botón Nuevo -->
+  <div class="header">
+    <h2>Clientes</h2>
+
+    <div class="spacer"></div>
+
+    <div class="tools">
+      <div class="search-wrap">
+        <input
+          class="search"
+          [formControl]="search"
+          placeholder="Buscar por nombre, apellidos, correo o teléfono…"
+          type="search"
+          autocomplete="off"
+          aria-label="Buscar clientes"
+        />
+      </div>
+
+      <button type="button" class="action" (click)="nuevo()">
+        <span class="plus">＋</span> Agregar Nuevo
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensaje de error general -->
+  <div class="alert error" *ngIf="error">{{ error }}</div>
+
+  <!-- Tabla -->
+  <div class="table-wrap" *ngIf="!loading; else cargando">
+    <table class="table" aria-label="Lista de clientes">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellidos</th>
+          <th>Teléfono</th>
+          <th>Correo</th>
+          <th class="col-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- click en la fila abre el detalle -->
+        <tr *ngFor="let c of listaFiltrada" (click)="verDetalle(c)">
+          <td>{{ c.nombre }}</td>
+          <td>{{ c.apellidos || '—' }}</td>
+          <td>{{ c.telefono || '—' }}</td>
+          <td class="email">
+            <a *ngIf="c.correo; else noMail" [href]="'mailto:' + c.correo">
+              {{ c.correo }}
+            </a>
+            <ng-template #noMail>—</ng-template>
+          </td>
+          <td class="col-actions">
+            <!-- stopPropagation para que no dispare el click de la fila -->
+            <button class="btn sm" (click)="editar(c); $event.stopPropagation()">
+              Editar
+            </button>
+            <button class="btn sm danger" (click)="eliminar(c); $event.stopPropagation()">
+              Eliminar
+            </button>
+            <button class="btn sm" (click)="verDetalle(c); $event.stopPropagation()">
+              Ver detalle
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty" *ngIf="listaFiltrada.length === 0">
+      No hay clientes que coincidan con la búsqueda.
+    </div>
+
+    <!-- TARJETA DE DETALLE DE CLIENTE -->
+    <div class="cliente-detalle-card" *ngIf="detalleVisible && selectedCliente">
+      <div class="detalle-top">
+        <h3>
+          Detalle de {{ selectedCliente.nombre }}
+          {{ selectedCliente.apellidos || '' }}
+        </h3>
+        <button
+          class="close-btn"
+          type="button"
+          (click)="cerrarDetalle()"
+          aria-label="Cerrar detalle"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="detalle-info">
+        <p><strong>Teléfono:</strong> {{ selectedCliente.telefono || '—' }}</p>
+        <p><strong>Correo:</strong> {{ selectedCliente.correo || '—' }}</p>
+      </div>
+
+      <h4>Citas de este cliente</h4>
+
+      <div *ngIf="detalleLoading" class="loading">
+        Cargando citas...
+      </div>
+
+      <div *ngIf="!detalleLoading && citasCliente.length === 0">
+        Este cliente no tiene citas registradas.
+      </div>
+
+      <table
+        *ngIf="!detalleLoading && citasCliente.length > 0"
+        class="table-mini"
+        aria-label="Citas de este cliente"
+      >
+        <thead>
+          <tr>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Estado</th>
+            <th>Descripción</th>
+            <th>Notas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cita of citasCliente">
+            <td>{{ cita.fechaHoraInicio | date: 'yyyy-MM-dd HH:mm' }}</td>
+            <td>{{ cita.fechaHoraFin    | date: 'yyyy-MM-dd HH:mm' }}</td>
+            <td>{{ cita.estado }}</td>
+            <td>{{ cita.descripcion || '—' }}</td>
+            <td>{{ cita.notas || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- fin tarjeta detalle cliente -->
+  </div>
+
+  <!-- Estado de carga -->
+  <ng-template #cargando>
+    <div class="loading">Cargando clientes…</div>
+  </ng-template>
+</div>
+
+<!-- Panel de edición/creación -->
+<div
+  class="panel"
+  *ngIf="panelAbierto"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Formulario de cliente"
+>
+  <div class="panel-card">
+    <div class="panel-header">
+      <h3>{{ editId ? 'Editar cliente' : 'Nuevo cliente' }}</h3>
+      <button class="btn ghost close" (click)="cancelar()" aria-label="Cerrar">
+        ✕
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="form" autocomplete="off">
+      <div class="grid">
+        <label>
+          <span>Nombre *</span>
+          <input class="input" formControlName="nombre" placeholder="Nombre" />
+          <small
+            class="error"
+            *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid">El nombre es obligatorio (mínimo 2 caracteres).
+          </small>
+        </label>
+
+        <label>
+          <span>Apellidos</span>
+          <input class="input" formControlName="apellidos" placeholder="Apellidos" />
+        </label>
+
+        <label>
+          <span>Teléfono</span>
+          <input class="input" formControlName="telefono" placeholder="8888-8888" />
+          <small
+            class="error"
+            *ngIf="form.get('telefono')?.touched && form.get('telefono')?.invalid">El teléfono debe tener 8 dígitos numéricos.
+          </small>
+        </label>
+
+        <label>
+          <span>Correo</span>
+          <input
+            class="input"
+            formControlName="correo"
+            type="email"
+            placeholder="correo@dominio.com"
+          />
+          <small
+            class="error"
+            *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid"
+          >
+            Ingresá un correo válido.
+          </small>
+        </label>
+      </div>
+
+      <div class="alert error" *ngIf="error">{{ error }}</div>
+
+      <div class="actions">
+        <button class="btn ghost" type="button" (click)="cancelar()">Cancelar</button>
+        <button class="btn primary" type="submit" [disabled]="form.invalid || saving">
+          {{ saving ? 'Guardando…' : (editId ? 'Actualizar' : 'Crear') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="confirm-overlay" *ngIf="confirmVisible">
+  <div class="confirm-box">
+    <h3>¿Eliminar cliente?</h3>
+    <p>
+      Estás a punto de eliminar
+      <strong>{{ selectedName || 'este cliente' }}</strong>.
+      Esta acción no se puede deshacer.
+    </p>
+
+    <div class="confirm-actions">
+      <button class="btn light" type="button" (click)="cancelarEliminacion()">
+        Cancelar
+      </button>
+      <button class="btn danger" type="button" (click)="confirmarEliminacion()">
+        Eliminar
+      </button>
+    </div>
+  </div>
+</div>

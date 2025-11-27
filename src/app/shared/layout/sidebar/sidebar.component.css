@@ -1,0 +1,57 @@
+.sidebar {
+  width: 230px;
+  background: linear-gradient(180deg, #fff9f9, #fff);
+  border-right: 1px solid rgba(15,22,40,0.06);
+  padding: 20px 14px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 12px rgba(15,22,40,0.04);
+  font-family: 'Poppins', sans-serif;
+}
+
+.sidebar-header .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #7f6169;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #4b5563;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.item .icon {
+  width: 22px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.item:hover {
+  background: #f5e1e0;
+  color: #7f6169;
+  transform: translateX(3px);
+}
+
+.item.active {
+  background: linear-gradient(90deg, #f5e1e0, #fff);
+  color: #7f6169;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(127,97,105,0.12);
+}

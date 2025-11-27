@@ -1,0 +1,65 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="logo text-center mb-3">
+<img
+  src="assets/logo-180.png"
+  srcset="assets/logo-180.png 180w, assets/logo-360.png 360w"
+  sizes="(min-width: 768px) 160px, 120px"
+  alt="BeautyCare"
+  width="180" height="54"
+  class="logo-img"
+/>
+
+
+
+    </div>
+
+    
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+      <div class="form-group">
+        <label>Usuario</label>
+        <input
+          type="text"
+          class="input"
+          placeholder="Escribe aquí tu nombre de usuario"
+          formControlName="nombreUsuario"
+           autofocus
+        />
+        <div class="error" *ngIf="form.get('nombreUsuario')?.touched && form.get('nombreUsuario')?.invalid">
+          El usuario es obligatorio
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input
+          type="password"
+          class="input"
+          placeholder="********"
+          formControlName="contrasena"
+           autofocus
+        />
+        <div class="error" *ngIf="form.get('contrasena')?.touched && form.get('contrasena')?.invalid">
+          La contraseña es obligatoria
+        </div>
+      </div>
+
+      <div class="alert" *ngIf="error">{{ error }}</div>
+
+     <button
+  class="btn"
+  type="submit"
+  [disabled]="loading || form.invalid"
+  (mousemove)="onButtonMouseMove($event)"
+  (click)="onButtonClick($event)"
+  title="Iniciar sesión"
+>
+  {{ loading ? 'Entrando…' : 'Entrar' }}
+</button>
+
+    </form>
+  </div>
+
+  <footer class="copy">© 2025 BeautyCare — Todos los derechos reservados</footer>
+</div>

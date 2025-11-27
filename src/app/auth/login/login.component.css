@@ -1,0 +1,176 @@
+/* =======================
+   Paleta + Layout general
+   ======================= */
+.login-page {
+  --dark: #0f1628;
+  --mauve: #7f6169;
+  --terra: #bd8d89;
+  --pink: #e4c5c2;
+  --pale: #f5e1e0;
+
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(1200px 600px at 75% -10%, var(--pale), transparent 60%),
+    radial-gradient(1000px 800px at -10% 100%, var(--pink), transparent 55%),
+    #ffffff;
+  font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* =======================
+   Tarjeta
+   ======================= */
+.login-card {
+  width: min(92vw, 520px);
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px 28px 24px;
+  box-shadow:
+    0 10px 25px rgba(15, 22, 40, 0.08),
+    0 2px 6px rgba(15, 22, 40, 0.06);
+  border: 1px solid rgba(15, 22, 40, 0.06);
+  transform: translateY(0);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  animation: fadeSlide 1s ease-out;
+}
+.login-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 14px 36px rgba(15, 22, 40, 0.10),
+    0 4px 10px rgba(15, 22, 40, 0.06);
+  border-color: rgba(15, 22, 40, .08);
+}
+
+/* Logo (centrado, con sombra y animación sutil) */
+.logo-img {
+  display: block;
+  margin: 0 auto 14px;
+  max-width: 160px;
+  height: auto;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.12));
+  transition: transform 0.3s ease;
+}
+.logo-img:hover { transform: scale(1.04); }
+
+/* Título */
+.title {
+  margin: 0 0 16px 0;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--dark);
+  letter-spacing: .2px;
+}
+
+/* =======================
+   Formulario
+   ======================= */
+.form { margin-top: 4px; }
+.form-group { margin-bottom: 16px; }
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  height: 42px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e6e6e8;
+  background: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease, background .2s ease;
+}
+.input::placeholder { color: #a8a8ad; }
+.input:hover { border-color: #d9c5c3; }
+.input:focus {
+  border-color: var(--terra);
+  box-shadow: 0 0 0 4px rgba(189, 141, 137, 0.18);
+}
+.form-group:focus-within label {
+  color: var(--mauve);
+  text-shadow: 0 0 1px rgba(127,97,105,.15);
+}
+
+/* Errores / alertas */
+.error {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #a94442;
+}
+.alert {
+  margin: 4px 0 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff1f1;
+  color: #a94442;
+  border: 1px solid #f3c7c7;
+}
+
+/* =======================
+   Botón (ripple)
+   ======================= */
+.btn {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--mauve), #6f535a);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: .2px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform .06s ease, filter .18s ease, background .18s ease;
+}
+.btn:hover { filter: brightness(1.03); }
+.btn:active { transform: translateY(1px) scale(.997); }
+.btn:disabled { opacity: .6; cursor: not-allowed; }
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120px 120px at var(--x, 50%) var(--y, 50%), rgba(255,255,255,.28), transparent 60%);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.btn.ripple-active::after { opacity: 1; transition: none; }
+
+/* Accesibilidad */
+.input:focus-visible, .btn:focus-visible {
+  outline: 2px solid rgba(189,141,137,.55);
+  outline-offset: 2px;
+}
+
+/* Footer */
+.copy {
+  margin-top: 16px;
+  font-size: 12px;
+  color: #8b8f9a;
+  text-align: center;
+  transition: color .2s ease;
+}
+.copy:hover { color: #787c86; }
+
+/* Animación de entrada */
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Responsivo */
+@media (max-width: 420px) {
+  .login-card { border-radius: 14px; padding: 22px 18px 18px; }
+  .btn { height: 46px; }
+  .logo-img { max-width: 120px; margin-bottom: 10px; }
+}

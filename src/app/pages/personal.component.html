@@ -1,0 +1,132 @@
+<!-- Encabezado con buscador y botón Nuevo -->
+<div class="header">
+  <h2>Personal</h2>
+  <div class="spacer"></div>
+
+  <div class="tools">
+    <input
+      class="search"
+      [formControl]="search"
+      placeholder="Buscar por nombre, apellidos, rol, teléfono o correo…" />
+
+   <button type="button" class="action" (click)="nuevo()">
+  <span class="plus">＋</span> Agregar Nuevo 
+</button>
+
+  </div>
+</div>
+
+<!-- Mensaje de error general -->
+<div class="alert error" *ngIf="error">{{ error }}</div>
+
+<!-- Tabla -->
+<div class="table-wrap" *ngIf="!loading; else cargando">
+  <table class="table" aria-label="Lista de personal">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Rol</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Fecha ingreso</th>
+        <th class="col-actions">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let p of listaFiltrada">
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.apellidos || '—' }}</td>
+        <td>{{ p.rol || '—' }}</td>
+    
+<td>{{ p.telefono  || '—' }}</td>
+<td class="email">
+  <a *ngIf="p.correo; else noMail" [href]="'mailto:' + p.correo">{{ p.correo }}</a>
+  <ng-template #noMail>—</ng-template>
+</td>
+<td>{{ p.fechaIngreso | date:'yyyy-MM-dd' }}</td>
+
+
+
+        <td class="col-actions">
+          <button class="btn sm" (click)="editar(p)">Editar</button>
+          <button class="btn sm danger" (click)="eliminar(p)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="empty" *ngIf="listaFiltrada.length === 0">
+    No hay personal que coincida con la búsqueda.
+  </div>
+</div>
+
+<ng-template #cargando>
+  <div class="loading">Cargando personal…</div>
+</ng-template>
+
+<!-- Panel de edición/creación -->
+<div class="panel" *ngIf="panelAbierto">
+  <div class="panel-card">
+    <div class="panel-header">
+      <h3>{{ editId ? 'Editar personal' : 'Nuevo personal' }}</h3>
+      <button class="btn ghost" type="button" (click)="cancelar()">Cerrar ✕</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="form">
+      <div class="grid">
+        <label>
+          <span>Nombre *</span>
+          <input class="input" formControlName="nombre" placeholder="Nombre" />
+          <small class="error" *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid">
+            El nombre es obligatorio (mín. 2 caracteres).
+          </small>
+        </label>
+
+        <label>
+          <span>Apellidos</span>
+          <input class="input" formControlName="apellidos" placeholder="Apellidos" />
+        </label>
+
+        <label>
+          <span>Rol</span>
+          <input class="input" formControlName="rol" placeholder="Ej.: Estilista, Recepción…" />
+        </label>
+
+        <label>
+          <span>Teléfono</span>
+          <input class="input" formControlName="telefono" placeholder="8888-8888" />
+        </label>
+
+        <label>
+          <span>Correo</span>
+          <input class="input" type="email" formControlName="correo" placeholder="correo@dominio.com" />
+          <small class="error" *ngIf="form.get('correo')?.touched && form.get('correo')?.invalid">
+            Correo no válido.
+          </small>
+        </label>
+
+        <label>
+          <span>Fecha de ingreso</span>
+          <!-- Acepta texto/ISO o date; si usas date, puedes setear con (yyyy-MM-dd) -->
+          <input class="input" type="date" formControlName="fechaIngreso" />
+        </label>
+
+        <label class="full" style="display:flex;align-items:center;gap:10px;">
+          <input type="checkbox" formControlName="activo" />
+          <span>Activo</span>
+        </label>
+      </div>
+
+      <div class="alert error" *ngIf="error">{{ error }}</div>
+
+      <div class="actions">
+        <button class="btn" type="button" (click)="cancelar()">Cancelar</button>
+        <button class="btn primary" type="submit" [disabled]="form.invalid || saving">
+          {{ saving ? 'Guardando…' : (editId ? 'Actualizar' : 'Crear') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

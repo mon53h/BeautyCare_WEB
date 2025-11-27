@@ -1,0 +1,200 @@
+<div class="header">
+  <h2>Citas</h2>
+  <div class="spacer"></div>
+  <div class="tools">
+    <input
+      class="search"
+      [formControl]="search"
+      placeholder="Buscar por cliente, personal o estado…"
+      type="search"
+      autocomplete="off"
+    />
+    <button type="button" class="action" (click)="nuevo()">
+      <span class="plus">＋</span> Agregar Nueva
+    </button>
+    <!-- NUEVO: botón para exportar a PDF -->
+    <button type="button" class="action" (click)="exportarPDF()">
+       Exportar PDF
+    </button>
+  </div>
+</div>
+
+<div class="alert error" *ngIf="error">{{ error }}</div>
+
+<div class="table-wrap" *ngIf="!loading; else cargando">
+
+  <!-- NUEVO: contenedor que se convierte en PDF -->
+  <div id="citasReporte">
+    <h3 style="text-align: center; margin-bottom: 4px;">
+      Reporte de Citas - BeautyCare
+    </h3>
+    <p style="font-size: 12px; text-align: right; margin: 0 0 8px 0;">
+      Generado: {{ today | date:'dd/MM/yyyy HH:mm' }}
+    </p>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Personal</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Estado</th>
+          <th class="col-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- click en la fila abre el detalle -->
+        <tr *ngFor="let c of listaFiltrada" (click)="verDetalle(c)">
+          <td>{{ getClienteNombre(c.clienteId) }}</td>
+          <td>{{ getPersonalNombre(c.personalId) }}</td>
+          <td>{{ c.fechaHoraInicio | date: 'yyyy-MM-dd HH:mm' }}</td>
+          <td>{{ c.fechaHoraFin    | date: 'yyyy-MM-dd HH:mm' }}</td>
+          <td>{{ c.estado }}</td>
+          <td class="col-actions">
+            <!-- stopPropagation para que el click del botón no dispare el detalle de la fila -->
+            <button class="btn sm" (click)="editar(c); $event.stopPropagation()">Editar</button>
+            <button class="btn sm danger" (click)="eliminar(c); $event.stopPropagation()">Eliminar</button>
+            <button class="btn sm" (click)="verDetalle(c); $event.stopPropagation()">Ver detalle</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty" *ngIf="listaFiltrada.length === 0">
+      No hay citas que coincidan con la búsqueda.
+    </div>
+  </div>
+  <!-- FIN del contenedor del PDF -->
+
+  <!-- TARJETA DE DETALLE DE CITA -->
+  <div class="cita-detalle-card" *ngIf="detalleVisible && selectedCita">
+    <div class="detalle-top">
+      <h3>Detalle de cita</h3>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="cerrarDetalle()
+        "
+        aria-label="Cerrar detalle"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="detalle-section">
+      <h4>Cliente</h4>
+      <p>
+        <strong>Nombre:</strong>
+        {{ getClienteNombre(selectedCita.clienteId) }}
+      </p>
+    </div>
+
+    <div class="detalle-section">
+      <h4>Personal</h4>
+      <p>
+        <strong>Nombre:</strong>
+        {{ getPersonalNombre(selectedCita.personalId) }}
+      </p>
+    </div>
+
+    <div class="detalle-section">
+      <h4>Fecha y hora</h4>
+      <p>
+        <strong>Inicio:</strong>
+        {{ selectedCita.fechaHoraInicio | date: 'yyyy-MM-dd HH:mm' }}<br />
+        <strong>Fin:</strong>
+        {{ selectedCita.fechaHoraFin | date: 'yyyy-MM-dd HH:mm' }}
+      </p>
+    </div>
+
+    <div class="detalle-section" *ngIf="selectedCita.descripcion">
+      <h4>Descripción</h4>
+      <p>{{ selectedCita.descripcion }}</p>
+    </div>
+
+    <div class="detalle-section" *ngIf="selectedCita.notas">
+      <h4>Notas</h4>
+      <p>{{ selectedCita.notas }}</p>
+    </div>
+
+    <div class="detalle-section">
+      <h4>Estado</h4>
+      <p>{{ selectedCita.estado }}</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #cargando>
+  <div class="loading">Cargando citas…</div>
+</ng-template>
+
+<!-- Panel -->
+<div class="panel" *ngIf="panelAbierto">
+  <div class="panel-card">
+    <div class="panel-header">
+      <h3>{{ editId ? 'Editar cita' : 'Nueva cita' }}</h3>
+      <button class="btn ghost" (click)="cancelar()">Cerrar ✕</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="form">
+      <div class="grid">
+        <label>
+          <span>Cliente *</span>
+          <select class="input" formControlName="clienteId">
+            <option [ngValue]="null">Selecciona…</option>
+            <option *ngFor="let cl of clientes" [ngValue]="cl.id">
+              {{ cl.nombre }} {{ cl.apellidos || '' }}
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span>Personal *</span>
+          <select class="input" formControlName="personalId">
+            <option [ngValue]="null">Selecciona…</option>
+            <option *ngFor="let p of personal" [ngValue]="p.id">
+              {{ p.nombre }} {{ p.apellidos || '' }}
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span>Inicio *</span>
+          <input class="input" type="datetime-local" formControlName="inicio" />
+        </label>
+
+        <label>
+          <span>Fin *</span>
+          <input class="input" type="datetime-local" formControlName="fin" />
+        </label>
+
+        <label>
+          <span>Estado</span>
+          <input
+            class="input"
+            formControlName="estado"
+            placeholder="Pendiente/Confirmada/Cancelada..."
+          />
+        </label>
+
+        <label class="full">
+          <span>Descripción</span>
+          <input class="input" formControlName="descripcion" />
+        </label>
+
+        <label class="full">
+          <span>Notas</span>
+          <input class="input" formControlName="notas" />
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="button" (click)="cancelar()">Cancelar</button>
+        <button class="btn primary" type="submit" [disabled]="form.invalid || saving">
+          {{ saving ? 'Guardando…' : (editId ? 'Actualizar' : 'Crear') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

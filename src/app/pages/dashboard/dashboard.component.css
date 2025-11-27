@@ -1,0 +1,154 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.dash-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1f2933;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* Tarjetas resumen */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.card {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff, #fff7f6);
+  border: 1px solid rgba(189,141,137,0.18);
+  box-shadow: 0 6px 14px rgba(15,22,40,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.card .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #9ca3af;
+}
+
+.card .value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #7f6169;
+}
+
+.card .hint {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+/* Panel próximas citas */
+.panel {
+  margin-top: 4px;
+  padding: 14px 14px 10px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgba(15,22,40,0.06);
+  box-shadow: 0 8px 18px rgba(15,22,40,0.04);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.panel-link {
+  font-size: 11px;
+  color: #7f6169;
+  text-decoration: none;
+}
+
+.panel-link:hover {
+  text-decoration: underline;
+}
+
+.panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cita {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #fff9f9;
+  border: 1px solid rgba(189,141,137,0.16);
+}
+
+.cita-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.cita-cliente {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.cita-servicio {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.cita-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #7f6169;
+  color: #fff;
+  font-size: 10px;
+}
+
+.mini {
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+.empty {
+  font-size: 12px;
+  color: #9ca3af;
+  padding: 4px 2px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .cards { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+}
